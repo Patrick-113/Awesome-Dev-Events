@@ -17,16 +17,29 @@ namespace AwesomeDevEvents.API.Controllers
       _context = context;
     }
 
-    // api/dev-events GET
+    /// <summary>
+    /// Obter todos os eventos
+    /// </summary>
+    /// <returns>Coleção de Eventos</returns>
+    /// <response code="200">Sucesso</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetAll()
     {
       var devEvents = _context.DevEvents.Where(d => !d.IsDeleted).ToList();
       return Ok(devEvents); //Ok = Objeto do código de resposta 200
     }
 
-    // api/dev-events/id GET
+    /// <summary>
+    /// Obter um evento
+    /// </summary>
+    /// <param name="id">Identificar do evento</param>
+    /// <returns>Dados do Evento</returns>
+    /// <response code="200">Sucesso</response>
+    /// <response code="404">Não encontrado</response>
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult GetById(Guid id)
     {
       var devEvent = _context.DevEvents.Include(de => de.Speakers).SingleOrDefault(d => d.Id == id);
@@ -37,8 +50,17 @@ namespace AwesomeDevEvents.API.Controllers
       return Ok(devEvent);
     }
 
-    // api/dev-events POST
+    /// <summary>
+    /// Cadastrar um evento
+    /// </summary>
+    /// <remarks>
+    /// {"title": "string", "description": "string", "startDate": "timestamp", "endDate": "timestamp"}
+    /// </remarks>
+    /// <param name="devEvent">Dados do evento</param>
+    /// <returns>Objeto recém-criado</returns>
+    /// <response code="201">Sucesso</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public IActionResult Post(DevEvent devEvent)
     {
       _context.DevEvents.Add(devEvent);
@@ -48,8 +70,20 @@ namespace AwesomeDevEvents.API.Controllers
       //CreateAtAction = Objeto do código de resposta 201 junto com o objeto criado
     }
 
-    // api/dev-events/id PUT
+    /// <summary>
+    /// Atualizar um evento
+    /// </summary>
+    /// <remarks>
+    /// {"title": "string", "description": "string", "startDate": "timestamp", "endDate": "timestamp"}
+    /// </remarks>
+    /// <param name="id">Edentificador do evento</param>
+    /// <param name="input">Dados do Evento</param>
+    /// <returns>Nada.</returns>
+    /// <response code="204">Sucesso</response>
+    /// <response code="404">Não encontrado</response>
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Update(Guid id, DevEvent input)
     {
       var devEvent = _context.DevEvents.SingleOrDefault(d => d.Id == id);
@@ -65,8 +99,16 @@ namespace AwesomeDevEvents.API.Controllers
       return NoContent(); //Not Found = Objeto do código de resposta 204
     }
 
-    // api/dev-events/id DELETE
+    /// <summary>
+    /// Deletar um evento
+    /// </summary>
+    /// <param name="id">Identificador do evento</param>
+    /// <returns>Nada.</returns>
+    /// <response code="204">Sucesso</response>
+    /// <response code="404">Não encontrado</response>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Delete(Guid id)
     {
       var devEvent = _context.DevEvents.SingleOrDefault(d => d.Id == id);
@@ -80,8 +122,20 @@ namespace AwesomeDevEvents.API.Controllers
       return NoContent();
     }
 
-    // api/dev-events/id/speakers
+    /// <summary>
+    /// Cadastrar palestrante
+    /// </summary>
+    /// <remarks>
+    /// {"name": "string", "talkTitle": "string", "talkDescription": "string", "linkedInProfile": "string", "devEventId": "Guid"}
+    /// </remarks>
+    /// <param name="id">Identificador do evento</param>
+    /// <param name="speaker">Dados do palestrante</param>
+    /// <returns>Nada</returns>
+    /// <response code="204">Sucesso</response>
+    /// <response code="404">Evento não encontrado</response>
     [HttpPost("{id}/speakers")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult PostSpeaker(Guid id, DevEventSpeaker speaker)
     {
       speaker.DevEventId = id;
