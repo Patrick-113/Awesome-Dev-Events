@@ -1,0 +1,6 @@
+@AwesomeDevEvents.API_HostAddress = http://localhost:5054
+
+GET {{AwesomeDevEvents.API_HostAddress}}/api/dev-events
+Accept: application/json
+
+###
