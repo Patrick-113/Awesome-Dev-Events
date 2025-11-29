@@ -1,3 +1,4 @@
+using AwesomeDevEvents.API.Mappers;
 using AwesomeDevEvents.API.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -10,7 +11,10 @@ var connectionString = builder.Configuration.GetConnectionString("DevEventsCs");
 // builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseInMemoryDatabase("DevEventsDB"));
 builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseNpgsql(connectionString));
 
+builder.Services.AddAutoMapper(typeof(DevEventProfile));
+
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen( c =>
 {
